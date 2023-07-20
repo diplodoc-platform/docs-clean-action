@@ -1,18 +1,18 @@
 name: docs-clean-action
-description: Delete revision from s3
+description: Delete revision from storage
 
 inputs:
   revision:
     required: true
-  s3-bucket:
+  storage-bucket:
     required: true
-  s3-endpoint:
+  storage-endpoint:
     required: true
-  s3-access-key-id:
+  storage-access-key-id:
     required: true
-  s3-secret-access-key:
+  storage-secret-access-key:
     required: true
-  s3-region:
+  storage-region:
     required: true
 
 runs:
@@ -20,15 +20,15 @@ runs:
   steps:
     - run: mkdir -p void # create placeholder dir
       shell: bash
-    - name: Delete revision from S3
-      uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
+    - name: Delete revision from storage
+      uses: jakejarvis/storage-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
       with:
         args: --delete
       env:
         DEST_DIR: "rev/${{ inputs.revision }}"
         SOURCE_DIR: "void"
-        AWS_S3_BUCKET: ${{ inputs.s3-bucket }}
-        AWS_S3_ENDPOINT: ${{ inputs.s3-endpoint }}
-        AWS_ACCESS_KEY_ID: ${{ inputs.s3-access-key-id }}
-        AWS_SECRET_ACCESS_KEY: ${{ inputs.s3-secret-access-key }}
-        AWS_REGION: ${{ inputs.s3-region }}
+        AWS_S3_BUCKET: ${{ inputs.storage-bucket }}
+        AWS_S3_ENDPOINT: ${{ inputs.storage-endpoint }}
+        AWS_ACCESS_KEY_ID: ${{ inputs.storage-access-key-id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.storage-secret-access-key }}
+        AWS_REGION: ${{ inputs.storage-region }}
