@@ -1,0 +1,34 @@
+name: docs-clean-action
+description: Delete revision from s3
+
+inputs:
+  revision:
+    required: true
+  s3-bucket:
+    required: true
+  s3-endpoint:
+    required: true
+  s3-access-key-id:
+    required: true
+  s3-secret-access-key:
+    required: true
+  s3-region:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - run: mkdir -p void # create placeholder dir
+      shell: bash
+    - name: Delete revision from S3
+      uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
+      with:
+        args: --delete
+      env:
+        DEST_DIR: "rev/${{ inputs.revision }}"
+        SOURCE_DIR: "void"
+        AWS_S3_BUCKET: ${{ inputs.s3-bucket }}
+        AWS_S3_ENDPOINT: ${{ inputs.s3-endpoint }}
+        AWS_ACCESS_KEY_ID: ${{ inputs.s3-access-key-id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.s3-secret-access-key }}
+        AWS_REGION: ${{ inputs.s3-region }}
