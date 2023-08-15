@@ -4,6 +4,8 @@ description: Delete revision from storage
 inputs:
   revision:
     required: true
+  project-name:
+    required: true
   storage-bucket:
     required: true
   storage-endpoint:
@@ -14,6 +16,8 @@ inputs:
     required: true
   storage-region:
     required: true
+  shared-storage-bucket:
+    default: false
 
 runs:
   using: composite
@@ -25,7 +29,7 @@ runs:
       with:
         args: --delete
       env:
-        DEST_DIR: "rev/${{ inputs.revision }}"
+        DEST_DIR: ${{ inputs.shared-storage-bucket == 'true' && inputs.project-name + "/" }}rev/${{ inputs.revision }}
         SOURCE_DIR: "void"
         AWS_S3_BUCKET: ${{ inputs.storage-bucket }}
         AWS_S3_ENDPOINT: ${{ inputs.storage-endpoint }}
