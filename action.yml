@@ -17,6 +17,7 @@ inputs:
   storage-region:
     required: true
   shared-storage-bucket:
+    type: boolean
     default: false
 
 runs:
@@ -24,12 +25,20 @@ runs:
   steps:
     - run: mkdir -p void # create placeholder dir
       shell: bash
+    - name: Set DEST_DIR
+      shell: bash
+      run: |
+        if [ "${{ inputs.shared-storage-bucket }}" == "true" ]; then
+          echo "DEST_DIR=${{ inputs.project-name }}/rev/${{ inputs.revision }}" >> $GITHUB_ENV
+        else
+          echo "DEST_DIR=rev/${{ inputs.revision }}" >> $GITHUB_ENV
+        fi
     - name: Delete revision from storage
       uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
       with:
         args: --delete
       env:
-        DEST_DIR: ${{ inputs.shared-storage-bucket == 'true' && inputs.project-name + "/" }}rev/${{ inputs.revision }}
+        DEST_DIR: ${{ env.DEST_DIR }}
         SOURCE_DIR: "void"
         AWS_S3_BUCKET: ${{ inputs.storage-bucket }}
         AWS_S3_ENDPOINT: ${{ inputs.storage-endpoint }}
